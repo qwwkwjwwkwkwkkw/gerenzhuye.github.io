@@ -18,7 +18,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Microsoft YaHei', Arial, sans-serif;
             line-height: 1.6;
@@ -27,7 +27,49 @@
             background-size: cover;
             background-position: center;
         }
-        
+
+        /* 加载界面样式 */
+        #loading-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: black;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        #progress-bar {
+            width: 300px;
+            height: 10px;
+            background-color: white;
+            margin-top: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        #progress-bar-fill {
+            width: 0;
+            height: 100%;
+            background-color: green;
+            transition: width 0.2s;
+        }
+
+        #loading-text {
+            color: white;
+            font-size: 24px;
+        }
+
+        #daily-quote {
+            color: white;
+            margin-top: 20px;
+            text-align: center;
+        }
+
         .acrylic-header {
             position: fixed;
             top: 0;
@@ -42,15 +84,17 @@
             -webkit-backdrop-filter: blur(20px);
             z-index: 100;
         }
+
         .acrylic-header a {
             color: #333;
             text-decoration: none;
             margin: 0 10px;
         }
+
         .acrylic-header a:hover {
             color: #ddd;
         }
-        
+
         .content {
             max-width: 960px;
             margin: 100px auto;
@@ -59,7 +103,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        
+
         .profile-pic {
             width: 150px;
             height: 150px;
@@ -67,13 +111,13 @@
             object-fit: cover;
             margin-bottom: 20px;
         }
-        
+
         .profile-name {
             font-size: 24px;
             margin-bottom: 10px;
             color: #333;
         }
-        
+
         .profile-description {
             font-size: 16px;
             color: #666;
@@ -81,29 +125,26 @@
         }
 
         a {
-        color: #007BFF; /* 蓝色，可以按需调整 */
-        text-decoration: none; /* 去除默认下划线 */
-        transition: color 0.3s ease; /* 平滑的颜色过渡效果 */
+            color: #007BFF; /* 蓝色，可以按需调整 */
+            text-decoration: none; /* 去除默认下划线 */
+            transition: color 0.3s ease; /* 平滑的颜色过渡效果 */
         }
 
-        /* 鼠标悬停时改变链接颜色 */
         a:hover {
-        color: #0056b3; /* 深蓝色，悬停时的颜色变化 */
-        text-decoration: underline; /* 悬停时显示下划线 */
+            color: #0056b3; /* 深蓝色，悬停时的颜色变化 */
+            text-decoration: underline; /* 悬停时显示下划线 */
         }
 
-        /* 调整段落间距 */
         p:last-child {
-        margin-bottom: 1rem; /* 根据需要调整底部外边距 */
-        }
-        
-        pre {
-        max-width: 100%; /* 或指定一个具体的宽度，如800px */
-        margin: 0 auto; /* 使代码块居中，若希望始终居左，可以移除此行 */
-        overflow-x: auto; /* 如果代码过长，会出现滚动条 */
+            margin-bottom: 1rem; /* 根据需要调整底部外边距 */
         }
 
-        /* 美化项目展示区域 */
+        pre {
+            max-width: 100%; /* 或指定一个具体的宽度，如800px */
+            margin: 0 auto; /* 使代码块居中，若希望始终居左，可以移除此行 */
+            overflow-x: auto; /* 如果代码过长，会出现滚动条 */
+        }
+
         .project-item {
             display: flex;
             margin-bottom: 20px;
@@ -137,7 +178,6 @@
             line-height: 1.5;
         }
 
-        /* 社交链接样式 */
         .social-links {
             text-align: center;
             padding: 10px 0;
@@ -154,7 +194,6 @@
             color: #007BFF;
         }
 
-        /* 响应式设计 */
         @media (max-width: 768px) {
             .acrylic-header {
                 flex-direction: column;
@@ -202,7 +241,6 @@
             }
         }
 
-        /* 音乐播放器样式 */
         .music-player {
             position: fixed;
             bottom: 10px;
@@ -210,13 +248,23 @@
             width: 330px;
             height: 86px;
             z-index: 1000;
+            display: none; /* 初始隐藏 */
         }
     </style>
 </head>
 <body>
+    <!-- 加载界面 -->
+    <div id="loading-screen">
+        <div id="loading-text">Loading...</div>
+        <div id="progress-bar">
+            <div id="progress-bar-fill"></div>
+        </div>
+        <div id="daily-quote">:D 获取中...</div> <!-- 用于显示每日一言 -->
+    </div>
+
     <!-- 亚克力效果导航栏 -->
     <div class="acrylic-header">
-        <a class="btn" href="#">首页</a>
+        <a class="btn" href="#">返回顶部</a>
         <a class="btn" href="#">关于我</a>
         <a class="btn" href="#" id="show-projects">作品展示</a>
         <a class="btn" href="#" id="show-contact">联系方式</a>
@@ -242,62 +290,99 @@
         <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=2613750132&auto=1&height=66"></iframe>
     </div>
 
-    <script>
-        layui.use('layer', function(){
-            var layer = layui.layer;
+   <script>
+    function fetchDailyQuote() {
+        // 使用 GET 请求获取每日一言
+        fetch('https://v1.hitokoto.cn') // HITOKOTO API
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('daily-quote').innerText = data.hitokoto; // 显示每日一言
+            })
+            .catch(error => {
+                console.error('获取每日一言失败:', error);
+                document.getElementById('daily-quote').innerText = '获取每日一言失败';
+            });
+    }
 
-            // 检测设备类型
-            function isMobile() {
-                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    function simulateLoading() {
+        let progressBarFill = document.getElementById("progress-bar-fill");
+        let width = 0;
+        let totalTime = 3000; // 总加载时间（毫秒）
+        let increment = 1; // 每次增加的幅度
+        let intervalTime = totalTime / 100; // 每次更新的间隔时间
+
+        let interval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(interval);
+                document.getElementById("loading-screen").style.display = "none";
+                document.querySelector(".music-player").style.display = "block"; // 显示音乐播放器
+            } else {
+                width += increment; // 增加进度
+                progressBarFill.style.width = width + "%";
             }
+        }, intervalTime); // 使用计算出的间隔时间
+    }
 
-            // 如果是手机设备，显示弹窗
-            if (isMobile()) {
-                var mobileAlert = layer.open({
-                    type: 1,
-                    title: false,
-                    closeBtn: 0,
-                    shadeClose: true,
-                    content: '<div style="padding: 20px; font-size: 16px; text-align: center;">推荐使用电脑访问以获得更好的体验<br><button id="close-alert" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">关闭</button></div>'
-                });
+    window.onload = function() {
+        fetchDailyQuote(); // 获取每日一言
+        simulateLoading(); // 启动加载进度条
+    };
 
-                document.getElementById('close-alert').onclick = function() {
-                    layer.close(mobileAlert);
-                };
-            }
+    layui.use('layer', function() {
+        var layer = layui.layer;
 
-            document.getElementById('show-projects').onclick = function() {
-                layer.open({
-                    type: 1,
-                    title: '作品展示',
-                    maxmin: true,
-                    shadeClose: true,
-                    area: ['800px', '600px'],
-                    content: `
-                        <div class="project-item">
-                            <img src="./src/xiangmu/html.png" alt="在线html编辑器">
-                            <div class="project-info">
-                                <div class="project-title">在线html编辑器</div>
-                                <div class="project-description">这是一个供大家免费使用的工具！你可以在线编辑HTML、CSS、JavaScript代码，并直接预览效果。立即体验》<a href="https://qwwkwjwwkwkwkkw.github.io/qwwkwjwwkwkwkkw2.github.io/" target="_blank">let,s go!</a>
-                            </div>
-                                <a href="https://github.com/qwwkwjwwkwkwkkw/qwwkwjwwkwkwkkw2.github.io" target="_blank">项目源码</a>
-                            </div>
+        // 检测设备类型
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // 如果是手机设备，显示弹窗
+        if (isMobile()) {
+            var mobileAlert = layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                shadeClose: true,
+                content: '<div style="padding: 20px; font-size: 16px; text-align: center;">推荐使用电脑访问以获得更好的体验<br><button id="close-alert" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">关闭</button></div>'
+            });
+
+            document.getElementById('close-alert').onclick = function() {
+                layer.close(mobileAlert);
+            };
+        }
+
+        document.getElementById('show-projects').onclick = function() {
+            layer.open({
+                type: 1,
+                title: '作品展示',
+                maxmin: true,
+                shadeClose: true,
+                area: ['800px', '600px'],
+                content: `
+                    <div class="project-item">
+                        <img src="./src/xiangmu/html.png" alt="在线html编辑器">
+                        <div class="project-info">
+                            <div class="project-title">在线html编辑器</div>
+                            <div class="project-description">这是一个供大家免费使用的工具！你可以在线编辑HTML、CSS、JavaScript代码，并直接预览效果。立即体验》<a href="https://qwwkwjwwkwkwkkw.github.io/qwwkwjwwkwkwkkw2.github.io/" target="_blank">let's go!</a>
                         </div>
-                    `
-                });
-            };
+                        <a href="https://github.com/qwwkwjwwkwkwkkw/qwwkwjwwkwkwkkw2.github.io" target="_blank">项目源码</a>
+                    </div>
+                `
+            });
+        };
 
-            document.getElementById('show-contact').onclick = function() {
-                layer.open({
-                    type: 1,
-                    title: '联系方式',
-                    maxmin: true,
-                    shadeClose: true,
-                    area: ['400px', '300px'],
-                    content: '<div style="padding: 20px;">邮箱: huahuanyilong@163.com<br>电话: 18763915153</div>'
-                });
-            };
-        });
-    </script>
+        document.getElementById('show-contact').onclick = function() {
+            layer.open({
+                type: 1,
+                title: '联系方式',
+                maxmin: true,
+                shadeClose: true,
+                area: ['400px', '300px'],
+                content: '<div style="padding: 20px;">邮箱: huahuanyilong@163.com<br>电话: 18763915153</div>'
+            });
+        };
+    });
+</script>
+
 </body>
 </html>
